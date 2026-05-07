@@ -18,5 +18,6 @@ jobs:
         with:
           args: >
             -Dsonar.organization=sonarqube-workshop
+            -Dsonar.projectKey=${{ github.event.repository.name }}
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
