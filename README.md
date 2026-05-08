@@ -2,9 +2,9 @@ Welcome to SonarQube workshop. In this exercise we will look at core SonarQube f
 
 <details>
   <summary>Task 1. Initial setup</summary>
-Use this repository template to create a new repository. If the Action gods were merciful today, the automation has already invited you to SonarQube Workshop organisation, created a repository from the template and used your GutHub username for repository name.
+If the Action gods were merciful today, the automation has already invited you to SonarQube Workshop organisation, created a repository from the template and used your GutHub username for repository name.
 
-If you haven't done so yet, please log into SonarQube Cloud from https://sonarcloud.io/login. Please make sure to use GitHub for authentication. 
+If you haven't done so yet, please log into SonarQube Cloud from https://sonarcloud.io/login. Please make sure to use GitHub for authentication.
 
 ![GitHub Login](workshop_images/github_login.jpg)
 
@@ -22,30 +22,18 @@ To create a new project in SonarQube Cloud from your GitHub repository, follow t
   3. Make sure to select **SonarQube Workshop** in organisation list. In the list of repositories, find and select the repository that was created for you. Make sure the repository name includes your GitHub username (e.g., `sq-workshop-yourusername`). Click on **Set Up** button.
   ![Select the repository](workshop_images/select_reporitory.jpg)
   
-  4. In the **Set up project for Clean as You Code** screen, select **Number of days** and accept the default 30 days period. Click on **Create project** button.
+  4. In the **Set up project for Clean as You Code** screen, select **Number of days** and accept the default **30 days** period. Click on **Create project** button.
   ![New code](workshop_images/clean_as_you_code.jpg)
   
-  5. SonarQube will start the analysis of the project which will take a few minutes
+  5. SonarQube may start the analysis of the project which will take a few minutes
   ![Initial analysis](workshop_images/initial_analysis.jpg)
   
-  6. When the initial analysis is completed, you should be able to see all issues found by SonarQube (make sure to select `Main branch` on the left):
-  ![Initial analysis result](workshop_images/initial_analysis_result.jpg)
+  6. In order to use AC/DC tooling, we will have to configure the scanning in pipelines. Go to next section.
   </details>
 
-<details>
-  <summary>Task 3. Review the results</summary>
-  
-  1. Go to `Issues` tab. Here you can see all the issues that were detected in your code. Feel free to filter by various parameters. 
-
-  2. Go to `Security Hotspots` tab. A security hotspot highlights a security-sensitive piece of code that the developer needs to review. SonarQube Cloud helps you find security hotspots in your code when running analyses. You can read more about Security Hotspots on https://docs.sonarsource.com/sonarqube-cloud/digging-deeper/security-hotspots
-  
-  3. Go to `Inventory` -> `Dependencies`. This is where Sonar reports on what [third party libraries](https://docs.sonarsource.com/sonarqube-cloud/advanced-security/viewing-dependencies) were imported into your application. But wait.... why there are 0 dependnencies? If you look at `package.json` file in your repositories - there are definitely a few packages that were declared! 
-
-  The reason for this is how the scanning is configured. With GitHub it is possible to have your code [scanned automatically](https://docs.sonarsource.com/sonarqube-cloud/advanced-setup/automatic-analysis). In order to scan for vulnerable packages we need to implement scanning in our pipelines.
-</details>
 
 <details>
-  <summary>Task 4. Setup Sonar scanning in GitHub Actions</summary>
+  <summary>Task 3. Setup Sonar scanning in GitHub Actions</summary>
   
   1. Go to `Administration` -> `Analisys Method`. 
   
@@ -57,13 +45,13 @@ To create a new project in SonarQube Cloud from your GitHub repository, follow t
 
   Follow these steps to setup the scanning in GitHub Actions:
   
-  2. Create `SONAR_TOKEN` secret in your test repository in GitHub:
+  2. Create `SONAR_TOKEN` secret in your test repository in GitHub. Use the value from the previous screen.
 
   ![Create new secret](workshop_images/new_repository_secret.jpg)
 
   ![Create SONAR_TOKEN](workshop_images/sonar_token.jpg)
 
-  3. Create a new workflow in `.github/workflows` directory in your test repository in GitHub. Click on `JS/TS & Web` to get the code for the workflow:
+  3. The workshop automation should have created a `sonar.yml` workflow in `.github/workflows` directory. If so - go to next step. Ohterwise - create a new workflow in `.github/workflows` directory in your test repository in GitHub. Click on `JS/TS & Web` to get the code for the workflow:
 
   ![Workflow details](workshop_images/workflow_details.jpg)
 
@@ -77,7 +65,7 @@ To create a new project in SonarQube Cloud from your GitHub repository, follow t
 
   ![Commit the workflow](workshop_images/commit_workflow.jpg)
 
-  4. Create `sonar-project.properties` file in root directory in your test repository in GitHub:
+  4. The workshop automation should have created a `sonar-project.properties` in your your repository. If so - update the first line with your SonarQube project's key and commit to main branch. Otherwise - create `sonar-project.properties` file in root directory in your test repository in GitHub:
 
   ![sonar-project.properties file](workshop_images/sonar_project_properties.jpg)
 
@@ -86,43 +74,15 @@ To create a new project in SonarQube Cloud from your GitHub repository, follow t
   ![Actions](workshop_images/actions.jpg)
 
   ![Sonar workflow run](workshop_images/sonar_workflow_run.jpg)
-
-  5. Once the workflow has finished, you should be able to see the list of dependencies in `Inventory` -> `Dependencies` and list of vulnerable dependencies in `Dependency Risks` tab:
-
-  ![Dependencies](workshop_images/dependencies.jpg)
-
-  ![Dependency Risks](workshop_images/dependency_risks.jpg)
   
 </details>
 
 <details>
-  <summary>Task 5. Configure branch protection</summary>
+  <summary>Task 4. Set up your AC/DC tooling</summary>
 
-  SonarQube is a great tool to surface any issues with security or quality in your code. However, to utilise the full potential you should consider implement strict controls about what goes into your default branch and into production. One way to do it on GitHub is to configure rulesets to enforce SonarQube scanning in pull requests and block the merge if quality gate fails.
+  Some blurp.
 
-  To configure the ruleset:
-  1. In GitHub, go to your repository settings, click on Rules -> Rulesets and create a new branch ruleset.
-  2. Give it a name and add `master` branch to target branches list.
-
-  ![Ruleset target branch](workshop_images/target_branch.jpg)
-  
-  3. Select `Require a pull request before merging` and make sure there are no approvals required. Select `Require status checks to pass` and add `SonarCloud Code Analysis` and `SonarQube Scan` (or whatever was configured as a name in Sonar workflow
-
-  ![Ruleset settings](workshop_images/ruleset_settings.jpg)
-  
-  4. Set `Enforcement status` to Active` and save the settings.
-
-  From now on, all chages to the `master` branch will require to have a pull request. Also, the quality gate should pass before the pull request can be merged.
-  
-</details>
-
-<details>
-  <summary>Task 6. Introduce a vulnerable dependency</summary>
-  
-  1. Create a pull request to merge `sanitize-html` branch into your master branch. This should trigger a GitHub Actions workflow with a Sonar scan.
-  
-  2. Wait until the scan is completed and review the messages in the pull request. Due to the failed quality gate, the `Merge` button is disabled.
-  
-  ![Quality gate fail](workshop_images/cg_fail_packages_json.jpg)
-
+  To set up the tolling:
+  1. Do this
+  2. Do this 
 </details>
