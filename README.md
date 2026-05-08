@@ -22,14 +22,7 @@ To create a new project in SonarQube Cloud from your GitHub repository, follow t
   3. Make sure to select **SonarQube Workshop** in organisation list. In the list of repositories, find and select the repository that was created for you. Make sure the repository name includes your GitHub username (e.g., `sq-workshop-yourusername`). Click on **Set Up** button.
   ![Select the repository](workshop_images/select_reporitory.jpg)
   
-  4. In the **Set up project for Clean as You Code** screen, select **Number of days** and accept the default **30 days** period. Click on **Create project** button.
-  ![New code](workshop_images/clean_as_you_code.jpg)
-  
-  5. SonarQube may start the analysis of the project which will take a few minutes
-  ![Initial analysis](workshop_images/initial_analysis.jpg)
-  
-  6. In order to use AC/DC tooling, we will have to configure the scanning in pipelines. Go to next section.
-  </details>
+</details>
 
 
 <details>
