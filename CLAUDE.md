@@ -6,15 +6,17 @@
 
 **Before generating or editing code** you MUST:
 1. Call `get_guidelines` for project context and coding standards
-2. Locate existing code with `search_by_signature_patterns` or `search_by_body_patterns`
-3. Read implementation with `get_source_code`
+<!--  2. Locate existing code with `search_by_signature_patterns` or `search_by_body_patterns` -->
+<!-- 3. Read implementation with `get_source_code` -->
 
 **When changing architecture or dependencies** you MUST:
 - Check `get_current_architecture` and `get_intended_architecture`
+<!-- 
 - Analyze impact using:
   - `get_upstream_call_flow` / `get_downstream_call_flow` - trace method calls
   - `get_references` - find all usages
-  - `get_classlike_structure_hierarchy` - check inheritance
+  - `get_classlike_structure_hierarchy` - check inheritance 
+--> 
 
 ## VERIFY Phase - After Generating Code
 
@@ -22,7 +24,7 @@ You must strictly follow this Analyze-Then-Commit workflow for every code modifi
 
 1. Read Phase: After any modification or before commit, use the `Read` tool to load the current state of all relevant source files.
 2. Analysis Phase: For every new or modified file, you must call `run_advanced_code_analysis` using:
-   * `projectKey`: <YourProjectKey>
+   * `projectKey`: sonarqube-workshop_sq-workshop-junjun-dachi
    * `filePath`: The project-relative path to the file.
    * `fileContent`: The full, updated content of the file.
    * `branchName`: The active development branch.
