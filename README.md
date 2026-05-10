@@ -27,55 +27,95 @@ To create a new project in SonarQube Cloud from your GitHub repository, follow t
 
 <details>
   <summary>Task 3. Setup Sonar scanning in GitHub Actions</summary>
-  
-  1. Go to `Administration` -> `Analisys Method`. 
-  
-  ![Analysis Method](workshop_images/analysis_method.jpg)
+  <br/>
 
-  As you can see, the automated analysis is enabled by default. We will need to turn that off and set up the analysis with GitHub Actions. Disable the automatic analysis and click on `With GitHub Actions`:
-  
-  ![Setup analysis](workshop_images/setup_analysis.jpg)
+  1. Go to SonarQube Cloud, navigate to “My account” >> “Security” >> “Generate Token” to generate a security token for code scanning from GitHub Pipeline to SonarQube Cloud.
+     
+  ![ACDC](workshop_images/acdc/sqc_myaccount_security_generate_tokens.png)
 
-  Follow these steps to setup the scanning in GitHub Actions:
-  
-  2. Create `SONAR_TOKEN` secret in your test repository in GitHub. Use the value from the previous screen.
+  2. Go to GitHub repo, open "Settings" >> "Secrets and variables" >> "Actions", create repo secret `SONAR_TOKEN` using security token created by above step.
+     
+  ![ACDC](workshop_images/acdc/gh_repo_secrets.png)
 
-  ![Create new secret](workshop_images/new_repository_secret.jpg)
+  3. Go to SonarQube Cloud, open your project >> "Administration" >> "Analysis method" >> "With GitHub Actions" >> "TS/JS Web" and copy content of sonar-project.properties to the same file in your GitHub repo root folder.
 
-  ![Create SONAR_TOKEN](workshop_images/sonar_token.jpg)
+  ![ACDC](workshop_images/acdc/sqc_analysis_method_sonar_project_properties.png)
+     
+  4. The file change in GitHub repo should trigger a code scan from GitHub to SonarQube Cloud as configured in the pipeline at your "GitHub Repo" >> "Actions"
+     
+ ![ACDC](workshop_images/acdc/gh_pipeline_for_property_change.png)
 
-  3. The workshop automation should have created a `sonar.yml` workflow in `.github/workflows` directory. If so - go to next step. Ohterwise - create a new workflow in `.github/workflows` directory in your test repository in GitHub. Click on `JS/TS & Web` to get the code for the workflow:
+  5. Go to SonarQube Cloud and check the scanning result of the branch like below.
 
-  ![Workflow details](workshop_images/workflow_details.jpg)
-
-  ![Add new file](workshop_images/create_new_file.jpg)
-
-  ![Create the workflow](workshop_images/create_workflow.jpg)
-
-  Pro tips:
-  - change the default `build.yml` name to `sonar.yml`
-  - change the name of the workflow in the file (line #1) to `SonarQube Scan`
-
-  ![Commit the workflow](workshop_images/commit_workflow.jpg)
-
-  4. The workshop automation should have created a `sonar-project.properties` in your your repository. If so - update the first line with your SonarQube project's key and commit to main branch. Otherwise - create `sonar-project.properties` file in root directory in your test repository in GitHub:
-
-  ![sonar-project.properties file](workshop_images/sonar_project_properties.jpg)
-
-  Creation of `sonar-project.properties` will trigger the workflow which you will be able to monitor in Actions tab:
-
-  ![Actions](workshop_images/actions.jpg)
-
-  ![Sonar workflow run](workshop_images/sonar_workflow_run.jpg)
+![ACDC](workshop_images/acdc/sqc_branch_scanning_result.png)
   
 </details>
 
 <details>
-  <summary>Task 4. Set up your AC/DC tooling</summary>
+  <summary>Task 4. Set up your SonarQube MCP Server</summary>
+  <br/>
+  1. Checktou your GitHub repo with `git clone https://github.com/sonarqube-workshop/sq-workshop-${gh_username` or download the zip file.
+     
+  ![SQC](workshop_images/acdc/gh_clone_repo.png)
 
-  Some blurp.
+  2. Go to https://mcp.sonarqube.com/config-generator.html to genereate your SonarQube MCP Server configuration, we suggest to use generic format copy paste it to your local project root folder at .mcp.json for claude or copilot cli, .codex/config.toml for codex, .cursor/mcp.json for cursor.
 
-  To set up the tolling:
-  1. Do this
-  2. Do this 
+  ![SQC](workshop_images/acdc/sqc_mcp_server_setup.png)
+
+  3.  Type /mcp to AI agent and see if SonarQube MCP Server is up running , and ask the AI Agent about tools exposed.
+  ![SQC](workshop_images/acdc/sqc_mcp_server_tools.png)
+
+</details>
+
+<details>
+  <summary>Task 5. SonarQube Context Augmentation & Agentic Analysis </summary>
+  <br/>
+  1. You may ask AI Agent to create an instruction file which will be used automatically with every task for SonarQube Agentic Workflow or copy and use the content of CLAUDE.md in the repo. Remember to update SonarQube project key in the instruction file.
+
+ ![SQC](workshop_images/acdc/claude_md.png)
+
+  2. Give a task to AI agent , for example "enable login with facebook for me" AI Agent will ask you for permission to use SonarQube MCP and get project context.
+     
+  ![SQC](workshop_images/acdc/sqc_mcp_guidelines.png)
+
+  4. After content is generated by AI Agent, it will send the content to SonarQube for code security and quality check, and issues detected by SonarQube will be returned to AI Agent.
+     
+  ![SQC](workshop_images/acdc/sqc_mcp_aa.png)
+  
+  5. For issues reported by SonarQube to AI Agent through MCP , AI Agent will get details of the rules and fix all the issues when possible.
+  
+  ![SQC](workshop_images/acdc/sqc_mcp_show_rules.png)
+    
+
+</details>
+
+
+<details>
+  <summary>Task 6. SonarQube Remediation Agent</summary>
+  <br/>
+  
+  1. Create a new branch at your GitHub repo https://github.com/sonarqube-workshop/sq-workshop-${gh_username} >> "Code" >>  "master/View al branches" >> "New branch".
+     
+  ![SQC](workshop_images/acdc/gh_new_branch.png)
+
+  2. Copy content from bad.code.for.pr to profileImageUrlUpload.js in develop branch, this action will trigger a branch analysis of develop branch into SonarQube Cloud.
+     
+  ![SQC](workshop_images/acdc/sqc_develop_branch_scan_result.png)
+
+  3. In GitHub, create a PR from develop branch to master branch , this will trigger a PR analysis from GitHub to SonarQube Cloud and you will see that in the very PR Quality Gate result is failed.
+ 
+   ![SQC](workshop_images/acdc/gh_pr_qg_failed.png)
+
+ 4. When result of Quality Gate against a PR is failed, this will trigger SonarQube Remediation Agent for fix suggestions posted direct to the PR in GitHub. 
+     
+   ![SQC](workshop_images/acdc/gh_pr_ra_summary.png)
+
+ 5. You may also assign issues reported by SonarQube to Remediation Agent in the analysis result page of PR in SonarQube Cloud.
+
+   ![SQC](workshop_images/acdc/gh_pr_assign_to_agent.png)
+
+ 6. A new PR is created by Remediation Agent to fix the issues in develop branch.
+
+  ![SQC](workshop_images/acdc/gh_ra_created_pr.png)
+  
 </details>
