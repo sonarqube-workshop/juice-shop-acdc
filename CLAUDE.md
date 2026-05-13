@@ -24,7 +24,7 @@ You must strictly follow this Analyze-Then-Commit workflow for every code modifi
 
 1. Read Phase: After any modification or before commit, use the `Read` tool to load the current state of all relevant source files.
 2. Analysis Phase: For every new or modified file, you must call `run_advanced_code_analysis` using:
-   * `projectKey`: sonarqube-workshop_sq-workshop-junjun-dachi
+   * `projectKey`: sonarqube-workshop_sq-workshop-<github_account_name>
    * `filePath`: The project-relative path to the file.
    * `fileContent`: The full, updated content of the file.
    * `branchName`: The active development branch.
